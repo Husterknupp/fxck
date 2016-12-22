@@ -1,0 +1,28 @@
+{
+  "name": "fxck",
+  "version": "1.0.0-SNAPSHOT",
+  "description": "xxo | Tic Tac Toe | node.js ♥ elm",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "body-parser": "1.14.2",
+    "express": "4.13.3",
+    "express-ws": "^2.0.0-rc.1"
+  },
+  "engines": {
+    "node": "5.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Husterknupp/fxck.git"
+  },
+  "keywords": [
+    "xxo",
+    "tick tack toe",
+    "websocket",
+    "elm"
+  ],
+  "license": "Apache License"
+}
