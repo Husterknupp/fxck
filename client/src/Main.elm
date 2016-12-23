@@ -4,22 +4,23 @@ import Board exposing (Board)
 import Token
 import Debug
 import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import WebSocket
 import Ws
-
-type Msg
-  = NoOp
-  | WsMsg String
+import Msg exposing (..)
 
 type alias Model =
   { board : Board
   , notification : Maybe String
+  , player : String
   }
 
 initialModel : Model
 initialModel =
   { board = Board.emptyBoard
   , notification = Nothing
+  , player = "🍭"
   }
 
 init : ( Model, Cmd Msg )
@@ -32,8 +33,16 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     NoOp -> (model, Cmd.none)
-    WsMsg msg ->
+    WsReceive msg ->
       ( (Ws.update msg model)
+      , Cmd.none
+      )
+    WsSend msg ->
+      ( model
+      , WebSocket.send "ws://192.168.178.22:5000/ws" msg
+      )
+    SetPlayer newPlayer ->
+      ( { model | player = newPlayer }
       , Cmd.none
       )
 
@@ -42,13 +51,22 @@ view model =
   div
     []
     ( List.append
-      ( Board.view model.board )
-      [ text (toString model) ]
+      ( Board.view model.board model.player )
+      [ span []
+        [ text "Player: "
+        , input
+          [ onInput SetPlayer
+          , placeholder "🍭"
+          ]
+          []
+        ]
+      , text (toString model)
+      ]
     )
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  ( WebSocket.listen "ws://192.168.178.22:5000/ws" WsMsg )
+  ( WebSocket.listen "ws://192.168.178.22:5000/ws" WsReceive )
 
 main =
   Html.program
