@@ -7,7 +7,8 @@ var express = require("express"),
     INSTANCE VARIABLES
     ==================
  */
-var gameBoard = [null, null, null, null, null, null, null, null, null];
+var gameBoard = ['', '', '', '', '', '', '', '', ''];
+var nullToken = '';
 
 /*global __dirname:false*/
 /*  ====================
@@ -28,25 +29,31 @@ app.listen(app.get("port"), function () { // heroku transparency
  */
 app.ws("/ws", function(ws, req) {
     console.log('new websocket connected');
-    ws.send(JSON.stringify({type: 'board', message: JSON.stringify(gameBoard)}));
+    ws.send(JSON.stringify(board()));
     ws.on('message', function(msgString) {
         var payload = JSON.parse(msgString);
         console.log('incoming: ' + msgString);
         if (payload.type == 'move') {
             gameBoard[payload.message.position] = payload.message.player.toLowerCase();
-            var result = {type: 'board', message: JSON.stringify(gameBoard)};
-            console.log('outgoing: ' + JSON.stringify(result));
-            ws.send(JSON.stringify(result));
-            broadcastIfBoardIsFinished(ws);
+            var board = board();
+            console.log('outgoing: ' + JSON.stringify(board));
+            sendStringToAllClients(JSON.stringify(board));
+            broadcastIfBoardIsFinished();
+        } else if (payload.type == 'reset') {
+            // todo
         }
     });
 });
+
+function board() {
+    return {type: 'board', message: gameBoard};
+}
 /*
 0 1 2
 3 4 5
 6 7 8
  */
-function broadcastIfBoardIsFinished(ws) {
+function broadcastIfBoardIsFinished() {
     var isDraw = true;
     var winner = null;
     if (oneLineSame(0, 4, 8)) {
@@ -78,7 +85,7 @@ function broadcastIfBoardIsFinished(ws) {
 
     } else {
         gameBoard.forEach(function(field) {
-            if (field == null) {
+            if (field == nullToken) {
                 isDraw = false;
             }
         });
@@ -86,10 +93,10 @@ function broadcastIfBoardIsFinished(ws) {
 
     if (winner != null) {
         console.log('winner: ' + winner);
-        ws.send(JSON.stringify({type: 'finish', message: winner}));
+        sendStringToAllClients(JSON.stringify({type: 'finish', message: winner}));
     } else if (isDraw) {
         console.log('finished: draw');
-        ws.send(JSON.stringify({type: 'finish', message: 'draw'}));
+        sendStringToAllClients(JSON.stringify({type: 'finish', message: 'draw'}));
     } else {
         console.log('not finished: no winner and still moves left');
     }
@@ -99,5 +106,11 @@ function oneLineSame(onePos, twoPos, threePos) {
     var one = gameBoard[onePos];
     var two = gameBoard[twoPos];
     var three = gameBoard[threePos];
-    return one != null && one == two && two == three;
+    return one != nullToken && one == two && two == three;
+}
+
+function sendStringToAllClients(leMessage) {
+    expressWs.getWss('/puzzles-ws').clients.forEach(function(ws) {
+        ws.send(leMessage);
+    });
 }
