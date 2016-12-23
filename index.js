@@ -31,8 +31,6 @@ board = function() {
     return {type: 'board', message: gameBoard};
 };
 
-console.log(board());
-
 app.ws("/ws", function(ws, req) {
     console.log('new websocket connected');
     ws.send(JSON.stringify(board()));
