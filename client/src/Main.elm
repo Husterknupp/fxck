@@ -61,6 +61,11 @@ view model =
           []
         ]
       , p []
+        [ button
+          [ onClick (WsSend "{ \"type\" : \"reset\"}") ]
+          [ text "Reset" ]
+        ]
+      , p []
         [text (toString model.notification)]
       ]
     )
