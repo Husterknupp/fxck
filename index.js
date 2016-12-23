@@ -3,13 +3,6 @@ var express = require("express"),
     bodyParser = require("body-parser"),
     expressWs = require('express-ws')(app); // IntelliJ doesnt know its required
 
-/*  ===================
-    INSTANCE VARIABLES
-    ==================
- */
-var gameBoard = [null, null, null, null, null, null, null, null, null];
-var nullToken = null;
-
 /*global __dirname:false*/
 /*  ====================
     EXPRESS APP SETTINGS
@@ -18,10 +11,20 @@ var nullToken = null;
 app.set("port", (process.env.PORT || 5000));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/client/dist/'));
-
 app.listen(app.get("port"), function () { // heroku transparency
     console.log("Node app is running on port", app.get("port"));
 });
+
+/*  ===================
+ INSTANCE VARIABLES
+ ==================
+ */
+var gameBoard = [];
+resetBoard = function() {
+    gameBoard = [null, null, null, null, null, null, null, null, null];
+};
+resetBoard();
+var nullToken = null;
 
 /*  ========================
     ENDPOINTS AND CONTROLLER
@@ -44,7 +47,9 @@ app.ws("/ws", function(ws, req) {
             sendStringToAllClients(JSON.stringify(b));
             broadcastIfBoardIsFinished();
         } else if (payload.type == 'reset') {
-            // todo
+            console.log('board empty now');
+            resetBoard();
+            sendStringToAllClients(JSON.stringify(board()));
         }
     });
 });
