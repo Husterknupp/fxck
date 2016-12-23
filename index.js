@@ -7,8 +7,8 @@ var express = require("express"),
     INSTANCE VARIABLES
     ==================
  */
-var gameBoard = ['', '', '', '', '', '', '', '', ''];
-var nullToken = '';
+var gameBoard = [null, null, null, null, null, null, null, null, null];
+var nullToken = null;
 
 /*global __dirname:false*/
 /*  ====================
