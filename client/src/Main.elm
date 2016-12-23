@@ -52,7 +52,7 @@ view model =
     []
     ( List.append
       ( Board.view model.board model.player )
-      [ span []
+      [ p []
         [ text "Player: "
         , input
           [ onInput SetPlayer
@@ -60,7 +60,8 @@ view model =
           ]
           []
         ]
-      , text (toString model)
+      , p []
+        [text (toString model.notification)]
       ]
     )
 

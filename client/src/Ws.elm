@@ -8,6 +8,7 @@ import Json.Decode as Decode exposing (field)
 
 type WsMsgType
   = BoardMsgType
+  | FinishMsgType
   | UnknownMsgType
 
 update msg model =
@@ -22,6 +23,15 @@ update msg model =
           case newBoardResult of
             Ok newBoard ->
               { model | board = newBoard }
+            Err error ->
+              { model | notification = Just error }
+      Ok FinishMsgType ->
+        let finishedPlayer =
+          Decode.decodeString (field "message" Decode.string) msg
+        in
+          case finishedPlayer of
+            Ok player ->
+              { model | notification = Just (String.concat [player, " won!"]) }
             Err error ->
               { model | notification = Just error }
       Err error ->
@@ -40,4 +50,5 @@ typeDecoderDecoder =
 stringToType s =
   case s of
     "board" -> BoardMsgType
+    "finish" -> FinishMsgType
     _ -> UnknownMsgType
