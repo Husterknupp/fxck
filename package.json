@@ -24,5 +24,5 @@
     "websocket",
     "elm"
   ],
-  "license": "Apache License"
+  "license": "Apache-2.0"
 }
