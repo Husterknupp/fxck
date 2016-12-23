@@ -17,7 +17,7 @@ var nullToken = '';
  */
 app.set("port", (process.env.PORT || 5000));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/client/dist/'));
 
 app.listen(app.get("port"), function () { // heroku transparency
     console.log("Node app is running on port", app.get("port"));
@@ -27,6 +27,12 @@ app.listen(app.get("port"), function () { // heroku transparency
     ENDPOINTS AND CONTROLLER
     ========================
  */
+board = function() {
+    return {type: 'board', message: gameBoard};
+};
+
+console.log(board());
+
 app.ws("/ws", function(ws, req) {
     console.log('new websocket connected');
     ws.send(JSON.stringify(board()));
@@ -35,9 +41,9 @@ app.ws("/ws", function(ws, req) {
         console.log('incoming: ' + msgString);
         if (payload.type == 'move') {
             gameBoard[payload.message.position] = payload.message.player.toLowerCase();
-            var board = board();
-            console.log('outgoing: ' + JSON.stringify(board));
-            sendStringToAllClients(JSON.stringify(board));
+            var b = board();
+            console.log('outgoing: ' + JSON.stringify(b));
+            sendStringToAllClients(JSON.stringify(b));
             broadcastIfBoardIsFinished();
         } else if (payload.type == 'reset') {
             // todo
@@ -45,9 +51,6 @@ app.ws("/ws", function(ws, req) {
     });
 });
 
-function board() {
-    return {type: 'board', message: gameBoard};
-}
 /*
 0 1 2
 3 4 5
@@ -110,7 +113,7 @@ function oneLineSame(onePos, twoPos, threePos) {
 }
 
 function sendStringToAllClients(leMessage) {
-    expressWs.getWss('/puzzles-ws').clients.forEach(function(ws) {
+    expressWs.getWss('/ws').clients.forEach(function(ws) {
         ws.send(leMessage);
     });
 }

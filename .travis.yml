@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - "node"
+script:
+  - cd client && npm install
+  - cd client && npm run build
 cache:
   directories:
   - $HOME/.npm
