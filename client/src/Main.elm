@@ -38,7 +38,7 @@ update msg model =
       , Cmd.none
       )
     WsSend msg ->
-      ( model
+      ( { model | notification = Nothing }
       , WebSocket.send "ws://192.168.178.22:5000/ws" msg
       )
     SetPlayer newPlayer ->
