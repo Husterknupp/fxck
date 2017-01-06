@@ -4,7 +4,7 @@
   "description": "xxo | Tic Tac Toe | node.js ♥ elm",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server/index.js"
   },
   "dependencies": {
     "body-parser": "1.14.2",

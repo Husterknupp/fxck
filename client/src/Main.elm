@@ -39,7 +39,7 @@ update msg model =
       )
     WsSend msg ->
       ( { model | notification = Nothing }
-      , WebSocket.send "ws://192.168.178.22:5000/ws" msg
+      , WebSocket.send "ws://localhost:5000/ws" msg
       )
     SetPlayer newPlayer ->
       ( { model | player = newPlayer }
@@ -72,7 +72,7 @@ view model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  ( WebSocket.listen "ws://192.168.178.22:5000/ws" WsReceive )
+  ( WebSocket.listen "ws://localhost:5000/ws" WsReceive )
 
 main =
   Html.program
