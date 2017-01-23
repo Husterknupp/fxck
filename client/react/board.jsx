@@ -14,15 +14,14 @@ class Field extends React.Component {
     this.tokenRole = "button";
   }
 
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
   render() {
     return (
-      <a style={this.tokenStyle} className={this.tokenClass} role={this.tokenRole}>{this.props.value}</a>
+      <a style={this.tokenStyle} 
+      className={this.tokenClass} 
+      role={this.tokenRole}
+      onClick={this.props.setFieldValue}>
+        {this.props.value}
+      </a>
       );
   }
 }
@@ -30,12 +29,28 @@ class Field extends React.Component {
 class Board extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {fields: props.fields};
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
+    // not to forget method name
   }
 
   componentWillUnmount() {
+    // not to forget method name
+  }
+
+  handleClick(field) {
+    var thizz = this;
+    return function fun(e) {
+      thizz.props.ws.send(JSON.stringify({type: 'move', message: {player: thizz.props.player, position: field}}));
+      
+      var nuw = thizz.state.fields.slice();
+      // TODO not needed to have whole game represented - do it all in Field
+      nuw[field] = thizz.props.player;
+      thizz.setState({fields: nuw});
+    }
   }
 
   render() {
@@ -43,27 +58,23 @@ class Board extends React.Component {
       <table>
         <tbody>
           <tr>
-            <th><Field value={this.props.fields[0]}/></th>
-            <th><Field value={this.props.fields[1]}/></th>
-            <th><Field value={this.props.fields[2]}/></th>
+            <th><Field value={this.state.fields[0]} setFieldValue={this.handleClick(0)}/></th>
+            <th><Field value={this.state.fields[1]} setFieldValue={this.handleClick(1)}/></th>
+            <th><Field value={this.state.fields[2]} setFieldValue={this.handleClick(2)}/></th>
           </tr>
           <tr>
-            <th><Field value={this.props.fields[3]}/></th>
-            <th><Field value={this.props.fields[4]}/></th>
-            <th><Field value={this.props.fields[5]}/></th>
+            <th><Field value={this.state.fields[3]} setFieldValue={this.handleClick(3)}/></th>
+            <th><Field value={this.state.fields[4]} setFieldValue={this.handleClick(4)}/></th>
+            <th><Field value={this.state.fields[5]} setFieldValue={this.handleClick(5)}/></th>
           </tr>
           <tr>
-            <th><Field value={this.props.fields[6]}/></th>
-            <th><Field value={this.props.fields[7]}/></th>
-            <th><Field value={this.props.fields[8]}/></th>
+            <th><Field value={this.state.fields[6]} setFieldValue={this.handleClick(6)}/></th>
+            <th><Field value={this.state.fields[7]} setFieldValue={this.handleClick(7)}/></th>
+            <th><Field value={this.state.fields[8]} setFieldValue={this.handleClick(8)}/></th>
           </tr>
         </tbody>
       </table>
     );
-  }
-
-  handleClick() {
-    console.log('abc');
   }
 }
 
@@ -74,14 +85,15 @@ class Game extends React.Component {
       fields: this.getNulledArray()
       , notification: "laal mirtsch"
       , player: ''
+      , webSocket: {}
     };
 
     this.setPlayer = this.setPlayer.bind(this);
 
     // todo extract into wrapper class
-    this.webSocket = new WebSocket("wss://" + window.location.host + "/ws");
+    this.state.webSocket = new WebSocket("wss://" + window.location.host + "/ws");
     var that = this;
-    this.webSocket.onerror = function(event) {
+    this.state.webSocket.onerror = function(event) {
         console.log("webSocket error. Try to connect without ssl");
         
         var webSocket = new WebSocket("ws://" + window.location.host + "/ws");
@@ -95,10 +107,10 @@ class Game extends React.Component {
         webSocket.onerror = function(event) {
             alert("Could not establish websocket connection even without ssl. App will not work. So sorry")
         };
-        this.webSocket = webSocket;
+        that.state.webSocket = webSocket;
     };
 
-    this.webSocket.onmessage = function(evt) {
+    this.state.webSocket.onmessage = function(evt) {
       that.onMessageHandler(evt);
     };
   }
@@ -127,12 +139,16 @@ class Game extends React.Component {
   }
 
   /* TODO
-  - have button with ws send
+  - have 'reset' button with ws send
    */
+  resetBoard(evt) {
+    // ws.send()
+  }
+
   render() {
     return (
       <div>
-        <Board fields={this.state.fields}/>
+        <Board fields={this.state.fields} player={this.state.player} ws={this.state.webSocket} />
         <input type='text' placeholder='🍭' value={this.state.player} onChange={this.setPlayer}></input>
         <div>{this.state.notification}</div>
       </div>
