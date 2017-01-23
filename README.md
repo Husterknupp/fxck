@@ -1,5 +1,5 @@
 # fxck
-xxo | Tic Tac Toe | node.js ♥ elm
+xxo | Tic Tac Toe | node.js ♥ elm ♥ React.js
 
 ### Compile elm Frontend
 ```

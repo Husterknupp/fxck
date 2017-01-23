@@ -71,10 +71,14 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fields: this.getNulledArray(),
-      notification: "laal mirtsch"
+      fields: this.getNulledArray()
+      , notification: "laal mirtsch"
+      , player: ''
     };
 
+    this.setPlayer = this.setPlayer.bind(this);
+
+    // todo extract into wrapper class
     this.webSocket = new WebSocket("wss://" + window.location.host + "/ws");
     var that = this;
     this.webSocket.onerror = function(event) {
@@ -118,15 +122,18 @@ class Game extends React.Component {
       ];
   }
 
+  setPlayer(evt) {
+    this.setState({player: evt.target.value});
+  }
+
   /* TODO
   - have button with ws send
-  - have player name as input
    */
   render() {
     return (
       <div>
         <Board fields={this.state.fields}/>
-        <input type='text' placeholder='🍭'></input>
+        <input type='text' placeholder='🍭' value={this.state.player} onChange={this.setPlayer}></input>
         <div>{this.state.notification}</div>
       </div>
       );
