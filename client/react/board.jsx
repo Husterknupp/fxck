@@ -44,10 +44,7 @@ class Board extends React.Component {
   handleClick(field) {
     var thizz = this;
     return function fun(e) {
-      thizz.props.ws.send(JSON.stringify({
-        type: 'move', 
-        message: {player: thizz.props.player, position: field}
-      }));
+      thizz.props.ws.send('move', {player: thizz.props.player, position: field});
     }
   }
 
@@ -76,61 +73,87 @@ class Board extends React.Component {
   }
 }
 
+class Ws {
+  constructor() {
+    this.onTypeCallbacks = {};
+
+    this.onMessageHandler = this.onMessageHandler.bind(this);
+    this.insecureFallback = this.insecureFallback.bind(this);
+
+    this.webSocket = new WebSocket("wss://" + window.location.host + "/ws");
+    this.webSocket.onerror = function(evt) {
+      console.log("Try to connect without ssl");
+      this.insecureFallback(evt);
+    }.bind(this);
+
+    this.webSocket.onmessage = function(evt) {
+      this.onMessageHandler(evt);
+    }.bind(this);
+  }
+
+  send(type, messageObj) {
+    var result;
+    if (messageObj) {
+      this.webSocket.send(JSON.stringify({
+        type
+        , message: messageObj
+      }))
+    } else {
+      this.webSocket.send(JSON.stringify({
+        type
+      }))
+    }
+  }
+
+  onType(type, callback) {
+    this.onTypeCallbacks[type] = callback;
+  }
+
+  insecureFallback(evt) {
+    var webSocket = new WebSocket("ws://" + window.location.host + "/ws");
+    webSocket.onopen = function() {
+      console.log("Established webSocket connection. But it aint gonna be secure, bro.");
+    };
+    // needed as callback
+    webSocket.onmessage = function(evt) {
+      this.onMessageHandler(evt);
+    }.bind(this);
+    webSocket.onerror = function(evt) {
+      alert("Could not establish websocket connection even without ssl. App will not work. So sorry")
+    }.bind(this);
+    this.webSocket = webSocket;
+  }
+
+  onMessageHandler(msgString) {
+    var msg = JSON.parse(msgString.data);
+    var typeCallback = this.onTypeCallbacks[msg.type];
+    if (typeCallback) {
+      typeCallback(msg.message);
+    } else {
+      console.log(`no callback defined for type ${msg.type}`);
+    }
+  };
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fields: this.getNulledArray()
+      fields: [
+        null, null, null
+        , null, null, null
+        , null, null, null
+      ]
       , notification: "eat more laal mirtsch"
       , player: ''
-      , webSocket: {}
     };
 
     this.setPlayer = this.setPlayer.bind(this);
     this.resetBoard = this.resetBoard.bind(this);
 
-    // TODO extract into wrapper class
-    this.state.webSocket = new WebSocket("wss://" + window.location.host + "/ws");
-    var that = this;
-    this.state.webSocket.onerror = function(event) {
-        console.log("webSocket error. Try to connect without ssl");
-        
-        var webSocket = new WebSocket("ws://" + window.location.host + "/ws");
-        webSocket.onopen = function() {
-          console.log("Established webSocket connection. But it aint gonna be secure, bro.");
-        };
-        // needed as callback
-        webSocket.onmessage = function(evt) {
-          that.onMessageHandler(evt);
-        };
-        webSocket.onerror = function(event) {
-            alert("Could not establish websocket connection even without ssl. App will not work. So sorry")
-        };
-        that.state.webSocket = webSocket;
-    };
-
-    this.state.webSocket.onmessage = function(evt) {
-      that.onMessageHandler(evt);
-    };
-  }
-
-  onMessageHandler (msgString) {
-    var msg = JSON.parse(msgString.data);
-    if (msg.type == "board") {
-      this.setState({fields: msg.message});
-    } else if (msg.type == "finish") {
-      this.setState({notification: 'winner is ' + msg.message});
-    } else {
-      // nothing
-    }
-  };
-
-  getNulledArray() {
-    return [
-        null, null, null
-        , null, null, null
-        , null, null, null
-      ];
+    this.webSocket = new Ws();
+    this.webSocket.onType("board", (fields) => {this.setState({fields})});
+    this.webSocket.onType("finish", (player) => {this.setState({notification: `winner is ${player}`})});
   }
 
   setPlayer(evt) {
@@ -138,13 +161,14 @@ class Game extends React.Component {
   }
 
   resetBoard() {
-    this.state.webSocket.send(JSON.stringify({type: 'reset'}));
+    this.webSocket.send('reset');
+    this.setState({notification: 'next round, bro'});
   }
 
   render() {
     return (
       <div>
-        <Board fields={this.state.fields} player={this.state.player} ws={this.state.webSocket} />
+        <Board fields={this.state.fields} player={this.state.player} ws={this.webSocket} />
         <input type='text' placeholder='🍭' value={this.state.player} onChange={this.setPlayer} />
         <div>
           <button onClick={this.resetBoard}>Reset Board</button>
