@@ -44,12 +44,10 @@ class Board extends React.Component {
   handleClick(field) {
     var thizz = this;
     return function fun(e) {
-      thizz.props.ws.send(JSON.stringify({type: 'move', message: {player: thizz.props.player, position: field}}));
-      
-      var nuw = thizz.state.fields.slice();
-      // TODO not needed to have whole game represented - do it all in Field
-      nuw[field] = thizz.props.player;
-      thizz.setState({fields: nuw});
+      thizz.props.ws.send(JSON.stringify({
+        type: 'move', 
+        message: {player: thizz.props.player, position: field}
+      }));
     }
   }
 
@@ -58,19 +56,19 @@ class Board extends React.Component {
       <table>
         <tbody>
           <tr>
-            <th><Field value={this.state.fields[0]} setFieldValue={this.handleClick(0)}/></th>
-            <th><Field value={this.state.fields[1]} setFieldValue={this.handleClick(1)}/></th>
-            <th><Field value={this.state.fields[2]} setFieldValue={this.handleClick(2)}/></th>
+            <th><Field value={this.props.fields[0]} setFieldValue={this.handleClick(0)}/></th>
+            <th><Field value={this.props.fields[1]} setFieldValue={this.handleClick(1)}/></th>
+            <th><Field value={this.props.fields[2]} setFieldValue={this.handleClick(2)}/></th>
           </tr>
           <tr>
-            <th><Field value={this.state.fields[3]} setFieldValue={this.handleClick(3)}/></th>
-            <th><Field value={this.state.fields[4]} setFieldValue={this.handleClick(4)}/></th>
-            <th><Field value={this.state.fields[5]} setFieldValue={this.handleClick(5)}/></th>
+            <th><Field value={this.props.fields[3]} setFieldValue={this.handleClick(3)}/></th>
+            <th><Field value={this.props.fields[4]} setFieldValue={this.handleClick(4)}/></th>
+            <th><Field value={this.props.fields[5]} setFieldValue={this.handleClick(5)}/></th>
           </tr>
           <tr>
-            <th><Field value={this.state.fields[6]} setFieldValue={this.handleClick(6)}/></th>
-            <th><Field value={this.state.fields[7]} setFieldValue={this.handleClick(7)}/></th>
-            <th><Field value={this.state.fields[8]} setFieldValue={this.handleClick(8)}/></th>
+            <th><Field value={this.props.fields[6]} setFieldValue={this.handleClick(6)}/></th>
+            <th><Field value={this.props.fields[7]} setFieldValue={this.handleClick(7)}/></th>
+            <th><Field value={this.props.fields[8]} setFieldValue={this.handleClick(8)}/></th>
           </tr>
         </tbody>
       </table>
@@ -83,14 +81,15 @@ class Game extends React.Component {
     super(props);
     this.state = {
       fields: this.getNulledArray()
-      , notification: "laal mirtsch"
+      , notification: "eat more laal mirtsch"
       , player: ''
       , webSocket: {}
     };
 
     this.setPlayer = this.setPlayer.bind(this);
+    this.resetBoard = this.resetBoard.bind(this);
 
-    // todo extract into wrapper class
+    // TODO extract into wrapper class
     this.state.webSocket = new WebSocket("wss://" + window.location.host + "/ws");
     var that = this;
     this.state.webSocket.onerror = function(event) {
@@ -120,7 +119,7 @@ class Game extends React.Component {
     if (msg.type == "board") {
       this.setState({fields: msg.message});
     } else if (msg.type == "finish") {
-      this.setState({notification: msg.message});
+      this.setState({notification: 'winner is ' + msg.message});
     } else {
       // nothing
     }
@@ -138,18 +137,18 @@ class Game extends React.Component {
     this.setState({player: evt.target.value});
   }
 
-  /* TODO
-  - have 'reset' button with ws send
-   */
-  resetBoard(evt) {
-    // ws.send()
+  resetBoard() {
+    this.state.webSocket.send(JSON.stringify({type: 'reset'}));
   }
 
   render() {
     return (
       <div>
         <Board fields={this.state.fields} player={this.state.player} ws={this.state.webSocket} />
-        <input type='text' placeholder='🍭' value={this.state.player} onChange={this.setPlayer}></input>
+        <input type='text' placeholder='🍭' value={this.state.player} onChange={this.setPlayer} />
+        <div>
+          <button onClick={this.resetBoard}>Reset Board</button>
+        </div>
         <div>{this.state.notification}</div>
       </div>
       );
