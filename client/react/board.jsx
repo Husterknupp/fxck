@@ -12,6 +12,12 @@ class Field extends React.Component {
     }
     this.tokenClass = "text-center";
     this.tokenRole = "button";
+
+    this.wsSendPlayer = this.wsSendPlayer.bind(this);
+  }
+
+  wsSendPlayer(evt) {
+    this.props.ws.send('move', {player: this.props.player, position: this.props.position});
   }
 
   render() {
@@ -19,7 +25,7 @@ class Field extends React.Component {
       <a style={this.tokenStyle} 
       className={this.tokenClass} 
       role={this.tokenRole}
-      onClick={this.props.setFieldValue}>
+      onClick={this.wsSendPlayer}>
         {this.props.value}
       </a>
       );
@@ -29,8 +35,6 @@ class Field extends React.Component {
 class Board extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {fields: props.fields};
-    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -41,31 +45,24 @@ class Board extends React.Component {
     // not to forget method name
   }
 
-  handleClick(field) {
-    var thizz = this;
-    return function fun(e) {
-      thizz.props.ws.send('move', {player: thizz.props.player, position: field});
-    }
-  }
-
   render() {
     return (
       <table>
         <tbody>
           <tr>
-            <th><Field value={this.props.fields[0]} setFieldValue={this.handleClick(0)}/></th>
-            <th><Field value={this.props.fields[1]} setFieldValue={this.handleClick(1)}/></th>
-            <th><Field value={this.props.fields[2]} setFieldValue={this.handleClick(2)}/></th>
+            <th><Field value={this.props.fields[0]} position={0} player={this.props.player} ws={this.props.ws}/></th>
+            <th><Field value={this.props.fields[1]} position={1} player={this.props.player} ws={this.props.ws}/></th>
+            <th><Field value={this.props.fields[2]} position={2} player={this.props.player} ws={this.props.ws}/></th>
           </tr>
           <tr>
-            <th><Field value={this.props.fields[3]} setFieldValue={this.handleClick(3)}/></th>
-            <th><Field value={this.props.fields[4]} setFieldValue={this.handleClick(4)}/></th>
-            <th><Field value={this.props.fields[5]} setFieldValue={this.handleClick(5)}/></th>
+            <th><Field value={this.props.fields[3]} position={3} player={this.props.player} ws={this.props.ws}/></th>
+            <th><Field value={this.props.fields[4]} position={4} player={this.props.player} ws={this.props.ws}/></th>
+            <th><Field value={this.props.fields[5]} position={5} player={this.props.player} ws={this.props.ws}/></th>
           </tr>
           <tr>
-            <th><Field value={this.props.fields[6]} setFieldValue={this.handleClick(6)}/></th>
-            <th><Field value={this.props.fields[7]} setFieldValue={this.handleClick(7)}/></th>
-            <th><Field value={this.props.fields[8]} setFieldValue={this.handleClick(8)}/></th>
+            <th><Field value={this.props.fields[6]} position={6} player={this.props.player} ws={this.props.ws}/></th>
+            <th><Field value={this.props.fields[7]} position={7} player={this.props.player} ws={this.props.ws}/></th>
+            <th><Field value={this.props.fields[8]} position={8} player={this.props.player} ws={this.props.ws}/></th>
           </tr>
         </tbody>
       </table>
