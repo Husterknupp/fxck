@@ -1,4 +1,10 @@
+import React from 'react/addons';
+
 // TODO extract module - ?use require.js
+// TODO make it run locally
+// TODO rename react -> src
+// TODO make it run on heroku
+// TODO unit tests?
 class Field extends React.Component {
   constructor(props) {
     super(props);
@@ -176,7 +182,7 @@ class Game extends React.Component {
   }
 }
 
-ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
-);
+// ReactDOM.render(
+//   <Game />,
+//   document.getElementById('root')
+// );
