@@ -22,7 +22,6 @@ constructor(props) {
   }
 
   render() {
-    // return "alala";
     return (
       <a style={this.tokenStyle} 
       className={this.tokenClass} 

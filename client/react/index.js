@@ -1,13 +1,8 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
-import Field from './test.jsx';
+import Game from './game.jsx';
 
-var a = new Field();
-
-console.log(a)
-console.log(a.render())
-
-// ReactDOM.render(
-//   React.createElement(Game, null, null),
-//   document.getElementById('root')
-// );
+ReactDOM.render(
+  <Game />,
+  document.getElementById('root')
+);
