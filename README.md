@@ -1,11 +1,11 @@
 # fxck
-xxo | Tic Tac Toe | node.js ♥ elm ♥ React.js
+xxo | Tic Tac Toe | node.js ♥ React.js
 
 ### Compile elm Frontend
 ```
 fxck$ cd client
 fxck/client$ npm install
-fxck/client$ npm run build
+fxck/client$ node_modules/.bin/webpack
 ```
 
 ### Start node Backend
