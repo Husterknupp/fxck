@@ -4,3 +4,5 @@ client/dist/
 client/elm-stuff/
 client/node_modules
 npm-debug.log
+.DS_Store
+
