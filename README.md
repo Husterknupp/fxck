@@ -1,7 +1,7 @@
 # fxck
 xxo | Tic Tac Toe | node.js ♥ React.js
 
-### Compile elm Frontend
+### Compile react Frontend
 ```
 fxck$ cd client
 fxck/client$ npm install
