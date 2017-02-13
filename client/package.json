@@ -5,9 +5,7 @@
   "main": "../server/index.js",
   "dependencies": {
     "react": "^15.4.2",
-    "react-dom": "^15.4.2"
-  },
-  "devDependencies": {
+    "react-dom": "^15.4.2",
     "babel": "^6.5.2",
     "babel-core": "^6.0.0",
     "babel-loader": "^6.2.10",
