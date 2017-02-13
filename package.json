@@ -4,7 +4,7 @@
   "description": "xxo | Tic Tac Toe | node.js ♥ react",
   "main": "index.js",
   "scripts": {
-    "prepublish": "./prepublish.sh",
+    "prepare": "./prepare.sh",
     "start": "node server/index.js"
   },
   "dependencies": {
