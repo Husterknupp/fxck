@@ -1,9 +1,10 @@
 {
   "name": "fxck",
   "version": "1.0.0-SNAPSHOT",
-  "description": "xxo | Tic Tac Toe | node.js ♥ elm",
+  "description": "xxo | Tic Tac Toe | node.js ♥ react",
   "main": "index.js",
   "scripts": {
+    "prepublish": "./prepublish.sh",
     "start": "node server/index.js"
   },
   "dependencies": {
@@ -22,7 +23,7 @@
     "xxo",
     "tick tack toe",
     "websocket",
-    "elm"
+    "react"
   ],
   "license": "Apache-2.0"
 }
