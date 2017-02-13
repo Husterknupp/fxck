@@ -13,7 +13,7 @@
     "express-ws": "^2.0.0-rc.1"
   },
   "engines": {
-    "node": "5.4.1"
+    "node": "7.3.0"
   },
   "repository": {
     "type": "git",
