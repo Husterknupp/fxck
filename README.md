@@ -1,18 +1,17 @@
 # fxck
 xxo | Tic Tac Toe | node.js ♥ React.js
 
-### Compile react Frontend
+### Dependencies and Bundling
 ```
-fxck$ cd client
-fxck/client$ npm install
-fxck/client$ node_modules/.bin/webpack
+fxck$ npm install
 ```
 
-### Start node Backend
+### Start Backend
 ```
-fxck$ cd server
-fxck/server$ npm install
-fxck/server$ npm start
+fxck$ npm start
 ```
 
 `fxck` should be running now on `localhost:5000`
+
+### Try it Live
+https://fxck.herokuapp.com/

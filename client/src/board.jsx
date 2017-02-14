@@ -1,7 +1,6 @@
 import React from 'react';
 import Field from './field.jsx';
 
-// TODO make it run on heroku
 // TODO unit tests?
 export default class Board extends React.Component {
   constructor(props) {
