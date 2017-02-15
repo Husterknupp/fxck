@@ -4,7 +4,7 @@
   , "description": "xxo | Tic Tac Toe | node.js ♥ react"
   , "main": "index.js"
   , "scripts": {
-    "postinstall": "./postinstall.sh"
+    "prepare": "cd client && npm install && node_modules/.bin/webpack"
     , "start": "node server/index.js"
   }
   , "dependencies": {

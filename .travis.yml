@@ -7,5 +7,6 @@ cache:
   - "$TRAVIS_BUILD_DIR/node_modules"
   - "$TRAVIS_BUILD_DIR/client/node_modules"
 deploy:
+  provider: heroku
   api_key:
     secure: pT2OpdZPP4MRR2UsdJpMbIldwWuXUl4v8dbhsj0P5zpW4Lt8vL8KP0NsgUwEBw+stRCV+L3gdv+xwIDyDcy7kucSnjv9lhVhQ7/1K23xSDb+cEGMAZUl8LNpufb/f/zxDYGIv822FtKyt3FctmeqrUN1Id+4Fj0jfcTjpUAmukon85tlvHD6b0OFodOoUB3pmQ84mz162AGwnVw6VhRHcGCp+owuAbDbCl/eeHkglGIovmtqN04ZbP4Z+8rz4p7xcigPs/8kF+YEjjf/2d8btTrGCqr+Eq7QzFLBKBBK8cDBqC04C+AnBVRY8Nrt0Jyqsqb4IOyxTiUpORkI/1/ZPds6DWVKP25O0hVu8gXk31XUMS+8Wmm88OIjoHyHgSHdQoP0UstEMhe+/cjWj8lpOt/Vtx3tDyED4kF8rLOBo6Dw0FZ7Q7R0E+welEo7w6HBHDiVzBQEG3lZKrKuYIG10iDiAK4SimFRV91NPDWIJ5IbuyrOX/rfqGSU5XXGMPNQMY2Mowot8hB9J0DXskC84MIFrnfvyipffh9pMk8kNAm+AdzScmzlFV5RdvyA9z+/JfGqyfT4q+VAb9JlBRP/BYaD4cz+NORy+imm67YqCxbfIPhgf0bWXUKcm+9hKSevkzb2eM77QEgr2iskGV0+2Ja2pfw5exaaJ6q7wvd6zuo=
