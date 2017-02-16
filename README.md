@@ -6,6 +6,10 @@ xxo | Tic Tac Toe | node.js ♥ React.js
 fxck$ npm install
 ```
 
+##### NPM and Node Versions
+  - `node ^7.3.x`
+  - `npm ^4.2.x`
+
 ### Start Backend
 ```
 fxck$ npm start
