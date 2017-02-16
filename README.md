@@ -5,6 +5,8 @@ xxo | Tic Tac Toe | node.js ♥ React.js
 ```
 fxck$ npm install
 ```
+##### Webpack in Dev Mode
+`fxk/client$ node_modules/.bin/webpack --watch`
 
 ##### NPM and Node Versions
   - `node ^7.3.x`
